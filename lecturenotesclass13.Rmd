@@ -362,7 +362,7 @@ First, identify the following:
 - Population:  Mice not on treatment
 - Parameter of interest: proportion
 - Sample: mice that died
-- Sample size: 
+- Sample size: 261
 
 ```{r boot_mice}
 boot_prop <- mice %>% 
@@ -379,6 +379,7 @@ ci_mice_died
 ```
 
 What does this mean?
+Confidence level of 95% of mice on treatment that died
 
 **Interpretation**:
 
@@ -392,22 +393,28 @@ visualise(boot_prop) +
 Consider the mice radiation results. Suppose we want to compute a 90% confidence interval for the proportion of mice that lived while on the treatment, regardless of the dose.
 
 ```{r practice_2_bootstrap}
-
+boot_prop <- mice %>% 
+  filter(treat == 0) %>% 
+  mutate(not_died = if_else(died == 1, "yes", "no")) %>% 
+  specify(response = died, success = "no") %>% 
+  generate(reps = 10000, type = "bootstrap") %>% 
+  calculate(stat = "prop")
 ```
 
 ```{r practice_2_ci}
-
+ci_mice_not_died <- get_ci(boot_prop, level = .90)
+ci_mice_died
 ```
 
 Visualizing our Resuts:
 
 ```{r practice_2_visualize}
-
+ci_mice_not_died
 ```
 
 
 Give an interpretation of your result.
-
+I am not sure if I did the exercise correctly, but I can assume from the prompt and from the data that it is the inverse of the previous dataset of mice that died.
 
 # References
 
